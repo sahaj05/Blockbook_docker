@@ -1,0 +1,23 @@
+# Use a base image
+FROM nestybox/ubuntu-focal-systemd-docker
+
+# Install necessary packages
+RUN apt update && \
+    apt install -y wget gnupg2 software-properties-common unzip
+
+# Create a directory for your Debian packages and download deb files
+WORKDIR /packages
+RUN wget https://github.com/ranchimall/blockbook-docker/archive/main.zip && \
+    unzip main.zip
+    
+
+# Install the Debian packages using dpkg
+WORKDIR /packages/blockbook-docker-main
+RUN apt install -y ./deb-files/backend-flo-testnet_0.15.1.1-satoshilabs-1_amd64.deb && \
+    apt install -y ./deb-files/blockbook-flo-testnet_0.4.0_amd64.deb
+
+# Expose ports
+EXPOSE 22 80 19166 
+
+# Start your applications (Uncomment and replace with your application start commands)
+CMD ["/lib/systemd/systemd"]
